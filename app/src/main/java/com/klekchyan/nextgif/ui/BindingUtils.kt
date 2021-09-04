@@ -21,7 +21,7 @@ fun ImageView.setGif(url: String?){
             .load(gifUri)
             .optionalCenterCrop()
             .transition(DrawableTransitionOptions.withCrossFade())
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .placeholder(R.drawable.loading_animation)
             .error(R.drawable.ic_disconnected)
             .into(this)

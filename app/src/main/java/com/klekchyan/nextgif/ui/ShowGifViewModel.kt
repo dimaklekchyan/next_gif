@@ -9,47 +9,71 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
+enum class LoadingState{ LOADING, SUCCESSFULLY, FAILURE }
+
 class ShowGifViewModel(private val gifRepository: GifRepository): ViewModel() {
 
     private val queue = HashMap<Int, GifDomain>()
 
     private val _currentPosition = MutableLiveData<Int>()
     private val _currentGif = MutableLiveData<GifDomain>()
+    private val _loadingState = MutableLiveData<LoadingState>()
 
     val currentPosition: LiveData<Int>
         get() = _currentPosition
     val currentGif: LiveData<GifDomain>
         get() = _currentGif
+    val loadingState: LiveData<LoadingState>
+        get() = _loadingState
 
     init {
         _currentPosition.value = 0
-        getGif(_currentPosition.value!!)
+        getNewGif(_currentPosition.value!!)
     }
 
-    private fun getGif(position: Int) {
-        if(queue.containsKey(position)) {
-            _currentGif.value = queue[position]
-        } else {
-            viewModelScope.launch {
-                try {
-                    val gifDomain = gifRepository.getRandomGif()
-                    queue[position] = gifDomain
-                    withContext(Dispatchers.Main){ _currentGif.value = gifDomain }
-                } catch (ex: Exception){
-                    Timber.d("$ex")
+    private fun getNewGif(position: Int) {
+        _loadingState.value = LoadingState.LOADING
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val gifDomain: GifDomain = gifRepository.getRandomGif()
+                queue[position] = gifDomain
+                withContext(Dispatchers.Main){
+                    _currentGif.value = gifDomain
+                    _loadingState.value = LoadingState.SUCCESSFULLY
                 }
+            } catch (ex: Exception){
+                withContext(Dispatchers.Main){
+                    _loadingState.value = LoadingState.FAILURE
+                }
+                Timber.d("$ex")
             }
         }
     }
 
+    fun onTryAgainButtonClicked(){
+        getNewGif(_currentPosition.value!!)
+    }
+
     fun onNextButtonClicked(){
-        _currentPosition.value = _currentPosition.value?.plus(1)
-        getGif(_currentPosition.value!!)
+        val nextPosition = _currentPosition.value!!.plus(1)
+        _currentPosition.value = nextPosition
+        if(queue.containsKey(nextPosition)) {
+            _currentGif.value = queue[nextPosition]
+            _loadingState.value = LoadingState.SUCCESSFULLY
+        } else {
+            getNewGif(nextPosition)
+        }
     }
 
     fun onBackButtonClicked(){
-        _currentPosition.value = _currentPosition.value?.minus(1)
-        getGif(_currentPosition.value!!)
+        val previousPosition = _currentPosition.value!!.minus(1)
+        _currentPosition.value = previousPosition
+        if(queue.containsKey(previousPosition)) {
+            _currentGif.value = queue[previousPosition]
+            _loadingState.value = LoadingState.SUCCESSFULLY
+        } else {
+            getNewGif(previousPosition)
+        }
     }
 
     override fun onCleared() {
