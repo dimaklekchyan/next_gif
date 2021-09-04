@@ -11,41 +11,50 @@ import javax.inject.Inject
 
 class ShowGifViewModel(private val gifRepository: GifRepository): ViewModel() {
 
-    private val _randomGif = MutableLiveData<GifDomain>()
-    val randomGif: LiveData<GifDomain>
-        get() = _randomGif
+    private val queue = HashMap<Int, GifDomain>()
 
-    private val _listOfGifs = MutableLiveData<List<GifDomain>>()
-    val listOfGifs: LiveData<List<GifDomain>>
-        get() = _listOfGifs
+    private val _currentPosition = MutableLiveData<Int>()
+    private val _currentGif = MutableLiveData<GifDomain>()
+
+    val currentPosition: LiveData<Int>
+        get() = _currentPosition
+    val currentGif: LiveData<GifDomain>
+        get() = _currentGif
 
     init {
-        Timber.d("ShowGifViewModel was initialized")
-        getRandomGif()
+        _currentPosition.value = 0
+        getGif(_currentPosition.value!!)
+    }
+
+    private fun getGif(position: Int) {
+        if(queue.containsKey(position)) {
+            _currentGif.value = queue[position]
+        } else {
+            viewModelScope.launch {
+                try {
+                    val gifDomain = gifRepository.getRandomGif()
+                    queue[position] = gifDomain
+                    withContext(Dispatchers.Main){ _currentGif.value = gifDomain }
+                } catch (ex: Exception){
+                    Timber.d("$ex")
+                }
+            }
+        }
     }
 
     fun onNextButtonClicked(){
-        Timber.d("Next button was clicked")
-        getRandomGif()
+        _currentPosition.value = _currentPosition.value?.plus(1)
+        getGif(_currentPosition.value!!)
     }
 
     fun onBackButtonClicked(){
-        Timber.d("Back button was clicked")
-        
+        _currentPosition.value = _currentPosition.value?.minus(1)
+        getGif(_currentPosition.value!!)
     }
 
-    private fun getRandomGif(){
-        try{
-            viewModelScope.launch(Dispatchers.IO) {
-                val response = gifRepository.getRandomGif()
-                withContext(Dispatchers.Main){
-                    _randomGif.value = response
-                    Timber.d("$response")
-                }
-            }
-        } catch (ex: Exception){
-            Timber.d("$ex")
-        }
+    override fun onCleared() {
+        super.onCleared()
+        queue.clear()
     }
 
 

@@ -22,7 +22,7 @@
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.randomGif.description}"
+                android:text="@{viewModel.currentGif.description}"
                 tools:text="Description"
 
                 app:layout_constraintBottom_toTopOf="@id/gifs_card"
@@ -45,7 +45,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    setGif="@{viewModel.randomGif.gifURL}"/>
+                    setGif="@{viewModel.currentGif.gifURL}"/>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -53,6 +53,7 @@
                 android:id="@+id/back_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> viewModel.onBackButtonClicked()}"
                 android:text="Back"
 
                 app:layout_constraintBottom_toBottomOf="parent"

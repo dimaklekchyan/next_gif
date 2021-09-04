@@ -1,14 +1,12 @@
 package com.klekchyan.nextgif.ui
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.klekchyan.nextgif.R
 import com.klekchyan.nextgif.appComponent
 import com.klekchyan.nextgif.databinding.ShowGifActivityBinding
-import timber.log.Timber
 import javax.inject.Inject
 
 class ShowGifActivity : AppCompatActivity() {
@@ -29,5 +27,12 @@ class ShowGifActivity : AppCompatActivity() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
+        viewModel.currentPosition.observe(this, { position ->
+            binding.backButton.isClickable = when(position){
+                0 -> false
+                else -> true
+            }
+        })
     }
 }
