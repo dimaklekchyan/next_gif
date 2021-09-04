@@ -20,15 +20,31 @@ class ShowGifViewModel(private val gifRepository: GifRepository): ViewModel() {
         get() = _listOfGifs
 
     init {
-        try {
+        Timber.d("ShowGifViewModel was initialized")
+        getRandomGif()
+    }
+
+    fun onNextButtonClicked(){
+        Timber.d("Next button was clicked")
+        getRandomGif()
+    }
+
+    fun onBackButtonClicked(){
+        Timber.d("Back button was clicked")
+        
+    }
+
+    private fun getRandomGif(){
+        try{
             viewModelScope.launch(Dispatchers.IO) {
-                val response = gifRepository.getGifsFromSection("latest", 0)
-                withContext(Dispatchers.Main) {
-                    _listOfGifs.value = response
+                val response = gifRepository.getRandomGif()
+                withContext(Dispatchers.Main){
+                    _randomGif.value = response
+                    Timber.d("$response")
                 }
             }
         } catch (ex: Exception){
-            Timber.d(ex)
+            Timber.d("$ex")
         }
     }
 

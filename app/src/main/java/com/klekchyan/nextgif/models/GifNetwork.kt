@@ -1,12 +1,12 @@
 package com.klekchyan.nextgif.models
 
 data class GifNetworkModel(
-    var id: Long,
-    var description: String,
-    var gifURL: String,
-    var previewURL: String,
-    var width: String,
-    var height: String
+    var id: Long?,
+    var description: String?,
+    var gifURL: String?,
+    var previewURL: String?,
+    var width: String?,
+    var height: String?
 )
 
 data class GifsContainer(
