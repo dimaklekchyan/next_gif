@@ -32,9 +32,9 @@ class ShowGifActivity : AppCompatActivity() {
         binding.viewModel = viewModel
 
         viewModel.currentPosition.observe(this, { position ->
-            binding.backButton.isClickable = when(position){
-                0 -> false
-                else -> true
+            when(position){
+                0 -> changeBackButtonBehavior(false)
+                else -> changeBackButtonBehavior(true)
             }
         })
 
@@ -47,19 +47,36 @@ class ShowGifActivity : AppCompatActivity() {
         })
     }
 
+    private fun changeNextButtonBehavior(isClickable: Boolean){
+        if(isClickable){
+            binding.nextButton.isClickable = isClickable
+            binding.nextButton.setImageResource(R.drawable.ic_next_button)
+        } else {
+            binding.nextButton.isClickable = isClickable
+            binding.nextButton.setImageResource(R.drawable.ic_next_button_not_clickable)
+        }
+    }
+    private fun changeBackButtonBehavior(isClickable: Boolean){
+        if(isClickable){
+            binding.backButton.isClickable = isClickable
+            binding.backButton.setImageResource(R.drawable.ic_back_button)
+        } else {
+            binding.backButton.isClickable = isClickable
+            binding.backButton.setImageResource(R.drawable.ic_back_button_not_clickable)
+        }
+    }
+
     private fun showDisconnectedContent(){
         binding.gifsCard.visibility = View.GONE
-        binding.disconnectedImage.isVisible = true
-        binding.tryAgain.isVisible = true
+        binding.disconnectedView.isVisible = true
 
-        binding.nextButton.isClickable = false
+        changeNextButtonBehavior(false)
     }
 
     private fun showContent(){
         binding.gifsCard.isVisible = true
-        binding.disconnectedImage.visibility = View.GONE
-        binding.tryAgain.visibility = View.GONE
+        binding.disconnectedView.visibility = View.GONE
 
-        binding.nextButton.isClickable = true
+        changeNextButtonBehavior(true)
     }
 }

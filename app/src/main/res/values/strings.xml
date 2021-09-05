@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Next GIF</string>
     <string name="disconnected">Disconnected</string>
-    <string name="try_again">Internet has not been working<br></br><u>Try again</u></string>
+    <string name="disconnected_description">Internet has not been working</string>
+    <string name="try_again"><u>Try again</u></string>
+    <string name="title_developers_life">Developers Life</string>
+    <string name="gif">Gif</string>
+    <string name="back_button">Back button</string>
+    <string name="next_button">Next button</string>
 </resources>
