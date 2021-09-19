@@ -99,4 +99,9 @@ class ShowGifActivity : AppCompatActivity() {
 
         changeNextButtonBehavior(true)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        this.cacheDir.deleteRecursively()
+    }
 }
