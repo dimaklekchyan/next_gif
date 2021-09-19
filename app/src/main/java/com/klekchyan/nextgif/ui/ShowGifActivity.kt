@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import com.klekchyan.nextgif.R
 import com.klekchyan.nextgif.appComponent
+import com.klekchyan.nextgif.data.LoadingState
 import com.klekchyan.nextgif.databinding.ShowGifActivityBinding
 import timber.log.Timber
 import javax.inject.Inject
