@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import com.klekchyan.nextgif.R
@@ -44,6 +45,24 @@ class ShowGifActivity : AppCompatActivity() {
                 LoadingState.LOADING -> { Timber.d("LOADING") }
                 LoadingState.SUCCESSFULLY -> showContent()
                 else -> showDisconnectedContent()
+            }
+        })
+
+        viewModel.shareButtonState.observe(this, { isClicked ->
+            if(isClicked) {
+                viewModel.onSharingDone()
+
+                val url = viewModel.currentGif.value?.gifURL ?: "Content doesn't exist"
+                val description = viewModel.currentGif.value?.description ?: "Content doesn't exist"
+
+                val shareIntent = ShareCompat.IntentBuilder(this)
+                    .setType("text/plain")
+                    .setText("$description\n$url")
+                    .intent
+
+                if(shareIntent.resolveActivity(packageManager) != null){
+                    startActivity(shareIntent)
+                }
             }
         })
     }

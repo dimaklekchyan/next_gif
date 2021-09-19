@@ -58,6 +58,20 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"/>
+
+                        <ImageView
+                            android:id="@+id/share_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_share"
+                            android:layout_margin="@dimen/large_margin"
+                            android:onClick="@{() -> viewModel.onShareButtonClicked()}"
+
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
